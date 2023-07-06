@@ -32,7 +32,8 @@ jobs:
         docker login -u ${{ secrets.REGISTRY_USER  }} -p ${{ secrets.REGISTRY_PASSWD  }}
         docker push fallewi/fast-api:${GITHUB_SHA}
         docker push fallewi/fast-api:latest
-  clone:
+  update-push:
+    needs: build-push-container
     name: Clone update and Push
     runs-on: ubuntu-latest
     steps:
