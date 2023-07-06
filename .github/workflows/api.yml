@@ -42,8 +42,10 @@ jobs:
       run: |
         mkdir ~/.ssh/
         touch ~/.ssh/id_rsa
+        touch ~/.ssh/id_rsa.pub
         cat  ${PRIVATE_KEY} > ~/.ssh/id_rsa
-        chmod 600 ~/.ssh/id_rsa
+        cat  ${PUBLIC_KEY} > ~/.ssh/id_rsa.pub
+        chmod 600 -R ~/.ssh/
         git clone git@github.com:fallewi/gitops-flux-helm.git
         cd gitops-flux-helm/helm
         cat values.yaml
