@@ -28,7 +28,7 @@ jobs:
         docker images
         docker run -d -p 80:80 --name fastapi fallewi/fast-api:${GITHUB_SHA}
         sleep 10
-        #curl localhost 
+        curl localhost 
         docker login -u ${{ secrets.REGISTRY_USER  }} --password-stdin ${{ secrets.REGISTRY_PASSWD  }}
         docker push fallewi/fast-api:${GITHUB_SHA}
         docker push fallewi/fast-api:latest
@@ -42,10 +42,11 @@ jobs:
       run: |
         cat  ${PRIVATE_KEY} > ~/.ssh/id_rsa
         git clone fallewi/gitops-flux-helm
-        cd gitops-flux-helm
+        cd gitops-flux-helm/helm
         cat values.yaml
         sed -i "s+tag.*+tag: ${GITHUB_SHA}+g" values.yaml
         cat values.yaml
+        cd ..
     - name: Commit and push changes
       run: |
         git config --global user.name "Fall lewis"
