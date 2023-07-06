@@ -40,6 +40,8 @@ jobs:
     steps:
     - name: Update commit hash to use the last commit hash
       run: |
+        mkdir ~/.ssh/
+        touch ~/.ssh/id_rsa
         cat  ${PRIVATE_KEY} > ~/.ssh/id_rsa
         git clone fallewi/gitops-flux-helm
         cd gitops-flux-helm/helm
