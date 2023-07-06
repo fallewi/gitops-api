@@ -43,6 +43,7 @@ jobs:
         mkdir ~/.ssh/
         touch ~/.ssh/id_rsa
         cat  ${PRIVATE_KEY} > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
         git clone git@github.com:fallewi/gitops-flux-helm.git
         cd gitops-flux-helm/helm
         cat values.yaml
