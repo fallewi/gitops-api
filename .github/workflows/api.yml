@@ -22,7 +22,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Build the Docker image
-    run: | 
+      run: | 
         docker build -t fallewi/fast-api:${GITHUB_SHA} .
         docker tag  fallewi/fast-api:${GITHUB_SHA} fallewi/fast-api:latest
         docker images
