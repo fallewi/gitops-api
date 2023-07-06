@@ -43,7 +43,7 @@ jobs:
         mkdir ~/.ssh/
         touch ~/.ssh/id_rsa
         cat  ${PRIVATE_KEY} > ~/.ssh/id_rsa
-        git clone fallewi/gitops-flux-helm
+        git clone git@github.com:fallewi/gitops-flux-helm.git
         cd gitops-flux-helm/helm
         cat values.yaml
         sed -i "s+tag.*+tag: ${GITHUB_SHA}+g" values.yaml
@@ -55,5 +55,5 @@ jobs:
         git config --global user.email "fall-lewis.y@datascientest.com"
         git add -A
         git commit -m "mis à jour de l'image avec le tag ${GITHUB_SHA}"
-        git remote add origin fallewi/gitops-flux-helm
+        git remote add origin git@github.com:fallewi/gitops-flux-helm.git
         git push origin master
