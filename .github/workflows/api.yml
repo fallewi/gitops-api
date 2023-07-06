@@ -32,7 +32,19 @@ jobs:
         docker login -u ${{ secrets.REGISTRY_USER  }} -p ${{ secrets.REGISTRY_PASSWD  }}
         docker push fallewi/fast-api:${GITHUB_SHA}
         docker push fallewi/fast-api:latest
-
+  clone:
+    name: Clone
+    runs-on: ubuntu-latest
+    steps:
+    - name: Setup SSH
+      uses: MrSquaare/ssh-setup-action@v1
+      with:
+          host: github.com
+          private-key: ${{ secrets.PRIVATE_KEY }}
+          
+    - name: Clone repository
+      run: git clone git@github.com:fallewi/gitops-flux-helm.git
+      
   update-and-push:
     needs: build-push-container
     name: deploy
