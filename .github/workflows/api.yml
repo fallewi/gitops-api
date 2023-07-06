@@ -1,0 +1,57 @@
+name: Fast-API CI
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Test python Code
+      run: | 
+        pip3 install -r requirements.txt 
+        cd app/
+        pytest
+      
+  build-push-container:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Build the Docker image
+      run: | 
+        docker build -t fallewi/fast-api:${GITHUB_SHA} .
+        docker tag  fallewi/fast-api:${GITHUB_SHA} fallewi/fast-api:latest
+        docker images
+        docker run -d -p 80:80 --name fastapi fallewi/fast-api:${GITHUB_SHA}
+        sleep 10
+		curl localhost 
+        docker login -u ${{ secrets.REGISTRY_USER  }} -p ${{ secrets.REGISTRY_PASSWD  }}
+        docker push fallewi/fast-api:${GITHUB_SHA}
+        docker push fallewi/fast-api:latest
+
+  update-and-push:
+    needs: build-push-container
+    name: deploy
+    runs-on: ubuntu-latest
+    steps:
+    - name: Update commit hash to use the last commit hash
+	  run: |
+        cat  ${PRIVATE_KEY} > ~/.ssh/id_rsa
+	    git clone fallewi/gitops-flux-helm
+		cd gitops-flux-helm
+        cat values.yaml
+	    sed -i "s+tag.*+tag: ${GITHUB_SHA}+g" values.yaml
+		cat values.yaml
+
+    - name: Commit and push changes
+	  run: |
+	    git config --global user.name "Fall lewis"
+        git config --global user.email "fall-lewis.y@datascientest.com"
+        git add -A
+        git commit -m "mis à jour de l'image avec le tag ${GITHUB_SHA}"
+		git remote add origin fallewi/gitops-flux-helm
+        git push origin master
