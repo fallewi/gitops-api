@@ -57,7 +57,7 @@ jobs:
     - name: Commit and push changes
       run: |
         ls
-        cd gitops-flux-helm.git
+        cd gitops-flux-helm
         git init
         git config --global user.name "Fall lewis"
         git config --global user.email "fall-lewis.y@datascientest.com"
