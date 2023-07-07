@@ -58,7 +58,6 @@ jobs:
       run: |
         ls
         cd gitops-flux-helm
-        git init
         git config --global user.name "Fall lewis"
         git config --global user.email "fall-lewis.y@datascientest.com"
         git add -A
