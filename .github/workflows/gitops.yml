@@ -61,5 +61,4 @@ jobs:
         git config --global user.email "fall-lewis.y@datascientest.com"
         git add -A
         git commit -m "mis à jour de l'image avec le tag ${GITHUB_SHA}"
-        git remote add origin git@github.com:fallewi/gitops-argo-helm.git
         git push origin master
