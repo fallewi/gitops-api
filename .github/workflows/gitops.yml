@@ -47,7 +47,7 @@ jobs:
     - name: Clone repository
       run: |
         rm -Rf *
-        git clone git@github.com:fallewi/gitops-flux-helm.git
+        git clone git@github.com:fallewi/gitops-argo-helm.git
         ls
         cd gitops-flux-helm/
         cd chart
