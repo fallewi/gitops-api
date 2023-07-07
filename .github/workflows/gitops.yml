@@ -51,7 +51,6 @@ jobs:
         cat values.yaml
         sed -i "s+tag.*+tag: ${GITHUB_SHA}+g" values.yaml
         cat values.yaml
-        cd ..
     - name: Commit and push changes
       run: |
         ls
