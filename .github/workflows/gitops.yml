@@ -37,6 +37,7 @@ jobs:
     name: Clone update and Push
     runs-on: ubuntu-latest
     steps:
+    - uses: actions/checkout@v3
     - name: Setup SSH
       uses: MrSquaare/ssh-setup-action@v1
       with:
@@ -54,6 +55,7 @@ jobs:
     - name: Commit and push changes
       run: |
         ls
+        cd gitops-flux-helm.git
         git init
         git config --global user.name "Fall lewis"
         git config --global user.email "fall-lewis.y@datascientest.com"
