@@ -8,6 +8,7 @@ env:
   dockerhub_id: demo.goharbor.io/webinarfleet
   dockerhub_repository: fastapi
   dockerhub_latest: latest
+  container: webinar
 
 jobs:
   test:
@@ -30,7 +31,7 @@ jobs:
         docker build -t $dockerhub_id/$dockerhub_repository:${GITHUB_SHA} .
         docker tag  $dockerhub_id/$dockerhub_repository:${GITHUB_SHA} $dockerhub_id/$dockerhub_repository:$dockerhub_latest
         docker images
-        docker run -d -p 80:80 --name $dockerhub_id $dockerhub_id/$dockerhub_repository:${GITHUB_SHA}
+        docker run -d -p 80:80 --name $container $dockerhub_id/$dockerhub_repository:${GITHUB_SHA}
         sleep 10
         curl localhost 
         docker login -u ${{ secrets.REGISTRY_USER  }} -p ${{ secrets.REGISTRY_PASSWD  }}
