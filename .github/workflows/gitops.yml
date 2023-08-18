@@ -5,7 +5,7 @@ on:
   pull_request:
     branches: [ master ]
 env:
-  dockerhub_id: demo.goharbor.io/demo-fleet
+  dockerhub_id: demo.goharbor.io/webinarfleet
   dockerhub_repository: fastapi
   dockerhub_latest: latest
 
