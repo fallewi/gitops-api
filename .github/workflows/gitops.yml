@@ -23,6 +23,7 @@ jobs:
         pytest
 
   secure:
+    needs: test
     name: Microsoft Security DevOps Analysis
     # MSDO runs on windows-latest.
     # ubuntu-latest also supported
@@ -56,7 +57,7 @@ jobs:
         path: ${{ steps.msdo.outputs.sarifFile }}
     
   build-push-container:
-    needs: test
+    needs: secure
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
