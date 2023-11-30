@@ -22,22 +22,38 @@ jobs:
         cd app/
         pytest
 
-  
   secure:
-    runs-on: ubuntu-latest
+    name: Microsoft Security DevOps Analysis
+    # MSDO runs on windows-latest.
+    # ubuntu-latest also supported
+    runs-on: windows-latest
     steps:
+      # Checkout your code repository to scan
     - uses: actions/checkout@v3
-    - name: Run Microsoft Security DevOps
-      uses: microsoft/security-devops-action@v1
+      # Run analyzers
+    - name: Run Microsoft Security DevOps Analysis
+      uses: microsoft/security-devops-action@latest
       id: msdo
-        
-  upload:
-    runs-on: ubuntu-latest
-    steps:
-    - name: Upload results to Security tab
+      with:
+        policy: 'GitHub'
+      # config: string. Optional. A file path to an MSDO configuration file ('*.gdnconfig').
+      # policy: 'GitHub' | 'microsoft' | 'none'. Optional. The name of a well-known Microsoft policy. If no configuration file or list of tools is provided, the policy may instruct MSDO which tools to run. Default: GitHub.
+      # categories: string. Optional. A comma-separated list of analyzer categories to run. Values: 'secrets', 'code', 'artifacts', 'IaC', 'containers. Example: 'IaC,secrets'. Defaults to all.
+      # languages: string. Optional. A comma-separated list of languages to analyze. Example: 'javascript,typescript'. Defaults to all.
+      # tools: string. Optional. A comma-separated list of analyzer tools to run. Values: 'bandit', 'binskim', 'eslint', 'templateanalyzer', 'terrascan', 'trivy'.
+
+      # Upload alerts to the Security tab
+    - name: Upload alerts to Security tab
       uses: github/codeql-action/upload-sarif@v2
       with:
         sarif_file: ${{ steps.msdo.outputs.sarifFile }}
+
+      # Upload alerts file as a workflow artifact
+    - name: Upload alerts file as a workflow artifact
+      uses: actions/upload-artifact@v3
+      with:  
+        name: alerts
+        path: ${{ steps.msdo.outputs.sarifFile }}
     
   build-push-container:
     needs: test
