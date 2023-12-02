@@ -70,23 +70,20 @@ jobs:
         docker run -d -p 80:80 --name $container $dockerhub_id/$dockerhub_repository:${GITHUB_SHA}
         sleep 10
         curl localhost 
-        docker login -u ${{ secrets.REGISTRY_USER  }} -p ${{ secrets.REGISTRY_PASSWD  }}
-        docker push $dockerhub_id/$dockerhub_repository:${GITHUB_SHA}
-        docker push $dockerhub_id/$dockerhub_repository:$dockerhub_latest
     - name: CSA Run Trivy vulnerability scanner
       uses: aquasecurity/trivy-action@master
       with:
         image-ref: '$dockerhub_id/$dockerhub_repository:${GITHUB_SHA}'
-        format: 'sarif'
+        format: 'table'
         output: 'trivy-results.sarif'
         scan-type: 'config'
         hide-progress: false
         exit-code: '1'
         ignore-unfixed: true
         severity: 'CRITICAL,HIGH'
-      env:
-        TRIVY_USERNAME: ${{ secrets.REGISTRY_USER  }}
-        TRIVY_PASSWORD: ${{ secrets.REGISTRY_PASSWD  }}
+      #env:
+        #TRIVY_USERNAME: ${{ secrets.REGISTRY_USER  }}
+        #TRIVY_PASSWORD: ${{ secrets.REGISTRY_PASSWD  }}
 
     - name: Upload Trivy scan results to GitHub Security tab
       uses: github/codeql-action/upload-sarif@v2
