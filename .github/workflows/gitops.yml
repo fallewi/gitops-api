@@ -80,7 +80,7 @@ jobs:
         hide-progress: false
         exit-code: '1'
         ignore-unfixed: true
-        severity: 'CRITICAL,HIGH'
+        #severity: 'CRITICAL,HIGH'
       #env:
         #TRIVY_USERNAME: ${{ secrets.REGISTRY_USER  }}
         #TRIVY_PASSWORD: ${{ secrets.REGISTRY_PASSWD  }}
