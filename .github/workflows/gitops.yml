@@ -57,6 +57,7 @@ jobs:
         path: ${{ steps.msdo.outputs.sarifFile }}
     
   build-push-container:
+    name: Build, test, scan and push
     needs: secure
     runs-on: ubuntu-latest
     steps:
