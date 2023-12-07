@@ -151,7 +151,7 @@ jobs:
           
   build-push-container:
     name: Build, test, scan and push
-    needs: secure
+    needs: zap_scan
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
