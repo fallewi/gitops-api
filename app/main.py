@@ -6,6 +6,6 @@ app = FastAPI()
 
 @app.get("/")
 async def read_main():
-    return {"msg": "DEMO GITOPS DE"}
+    return {"msg": "MC  GITOPS DEVOPS"}
 
 
