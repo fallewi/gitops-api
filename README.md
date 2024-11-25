@@ -10,7 +10,6 @@ In the rapidly evolving landscape of software development and deployment, organi
 
 ![](https://miro.medium.com/v2/resize:fit:875/1*bJjRKI-zHbTa3n86rIwbXQ.png)
 
-Photo by weaveworks
 
 GitOps shifts the paradigm by using Git as the single source of truth for both application code and infrastructure configuration. By adopting GitOps principles, organisations can achieve greater visibility, traceability, and scalability in their deployments. In this article, we will explore the integration of GitOps with CI/CD pipelines, specifically focusing on the combination of GitHub Actions and Argo CD.
 
