@@ -60,37 +60,120 @@ To create a workflow, select the GitHub repository, click Actions, and select â€
 
 
 Here is the workflow file
+```
+name: Fast-API CI
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+env:
+  dockerhub_id: fallewi
+  dockerhub_repository: fastapi
+  dockerhub_latest: latest
+  container: webinar
+permissions:
+  security-events: write
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Test python Code
+      run: | 
+        pip3 install -r requirements.txt 
+        cd app/
+        pytest
 
+  secure:
+    needs: test
+    name: Microsoft Security DevOps Analysis
+    # MSDO runs on windows-latest.
+    # ubuntu-latest also supported
+    runs-on: windows-latest
+    steps:
+      # Checkout your code repository to scan
+    - uses: actions/checkout@v3
+      # Run analyzers
+    - name: Run Microsoft Security DevOps Analysis
+      uses: microsoft/security-devops-action@latest
+      id: msdo
+      with:
+        policy: 'GitHub'
+      # config: string. Optional. A file path to an MSDO configuration file ('*.gdnconfig').
+      # policy: 'GitHub' | 'microsoft' | 'none'. Optional. The name of a well-known Microsoft policy. If no configuration file or list of tools is provided, the policy may instruct MSDO which tools to run. Default: GitHub.
+      # categories: string. Optional. A comma-separated list of analyzer categories to run. Values: 'secrets', 'code', 'artifacts', 'IaC', 'containers. Example: 'IaC,secrets'. Defaults to all.
+      # languages: string. Optional. A comma-separated list of languages to analyze. Example: 'javascript,typescript'. Defaults to all.
+      # tools: string. Optional. A comma-separated list of analyzer tools to run. Values: 'bandit', 'binskim', 'eslint', 'templateanalyzer', 'terrascan', 'trivy'.
+
+      # Upload alerts to the Security tab
+    - name: Upload alerts to Security tab
+      uses: github/codeql-action/upload-sarif@v2
+      with:
+        sarif_file: ${{ steps.msdo.outputs.sarifFile }}
+
+      # Upload alerts file as a workflow artifact
+    - name: Upload alerts file as a workflow artifact
+      uses: actions/upload-artifact@v3
+      with:  
+        name: alerts
+        path: ${{ steps.msdo.outputs.sarifFile }}
+    
+  build-push-container:
+    needs: secure
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Build the Docker image
+      run: | 
+        docker build -t $dockerhub_id/$dockerhub_repository:${GITHUB_SHA} .
+        docker tag  $dockerhub_id/$dockerhub_repository:${GITHUB_SHA} $dockerhub_id/$dockerhub_repository:$dockerhub_latest
+        docker images
+        docker run -d -p 80:80 --name $container $dockerhub_id/$dockerhub_repository:${GITHUB_SHA}
+        sleep 10
+        curl localhost 
+        docker login -u ${{ secrets.REGISTRY_USER  }} -p ${{ secrets.REGISTRY_PASSWD  }}
+        docker push $dockerhub_id/$dockerhub_repository:${GITHUB_SHA}
+        docker push $dockerhub_id/$dockerhub_repository:$dockerhub_latest
+  update-push:
+    needs: build-push-container
+    name: Clone update and Push
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Setup SSH
+      uses: MrSquaare/ssh-setup-action@v1
+      with:
+          host: github.com
+          private-key: ${{ secrets.PRIVATE_KEY }}
+          
+    - name: Clone repository
+      run: |
+        rm -Rf *
+        git clone git@github.com:fallewi/gitops-manifests.git
+        ls
+        cd gitops-fleet-helm/
+        cat values.yaml
+        sed -i "s+tag.*+tag: ${GITHUB_SHA}+g" values.yaml
+        cat values.yaml
+    - name: Commit and push changes
+      run: |
+        ls
+        cd gitops-fleet-helm
+        git config --global user.name "Fall lewis"
+        git config --global user.email "fall-lewis.y@datascientest.com"
+        git add -A
+        git commit -m "mis Ã  jour de l'image avec le tag ${GITHUB_SHA}"
+        git push origin master
+```
 
 The above Git workflow file defines a workflow that will run on every push to the main branch. The workflow has three jobs:
+-   Test - This job will test the the Python application
+-   secure - This job will test the security of the application components and IAC code into the repository
+-   build-push-container - This job will build a Docker image for the application and push it to Docker Hub.
+-   update-push - This job will modify the deployment manifest in the CICD-Manifest repository to use the newly-pushed Docker image.
 
--   Build - This job will build the Python application using Python 3.10. It will also lint the application using flake8 and run unit tests using pytest.
--   Docker - This job will build a Docker image for the application and push it to Docker Hub.
--   Modifygit - This job will modify the deployment manifest in the CICD-Manifest repository to use the newly-pushed Docker image.
 
-Here is a more detailed description of each job:
-
-**Build**
-
--   The first step in this job is to checkout the code from the repository.
--   The next step is to set up Python 3.10. This is done using the actions/setup-python action.
--   The third step is to install the dependencies for the application. This is done using the pip install command.
--   The fourth step is to lint the application using flake8. This is done by running the flake8 command.
--   The fifth step is to run unit tests using pytest. This is done by running the pytest command.
-
-**Docker**
-
--   The first step in this job is to checkout the code from the repository.
--   The next step is to set up QEMU. This is done using the docker/setup-qemu-action action.
--   The third step is to set up Docker Buildx. This is done using the docker/setup-buildx-action action.
--   The fourth step is to login to Docker Hub. This is done using the docker/login-action action.
--   The fifth step is to build and push the Docker image. This is done using the docker/build-push-action action.
-
-**Modifygit**
-
--   The first step in this job is to checkout the code from the CICD-Manifest repository.
--   The next step is to modify the deployment manifest to use the newly-pushed Docker image. This is done by running the sed command.
--   The final step is to push the changes to the repository. This is done using the git push command.
 
 The above GitHub repo uses secrets for Docker Hub and Git. To create secrets in a GitHub repo, go to the repository settings, select secrets, and click New repository secret. Give the secret a name and a value, and then you can use it anywhere in the repo. Secrets are encrypted and stored in GitHub, so they are safe from prying eyes. You can use secrets to store any type of sensitive information, such as API keys, passwords, and tokens.
 
