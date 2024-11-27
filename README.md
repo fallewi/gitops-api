@@ -217,11 +217,36 @@ Access ArgoCD Dashboard from your local machine using the following link if you 
 
 ![](https://miro.medium.com/v2/resize:fit:875/1*o99gtzUUzMmBBOaO2uvedA.png)
 
-To get the password you may execute the below command in your Kubernetes cluster. (username is admin)
+Step 1: Invalidating Admin Credentials
 
+To initiate the password reset, we start by invalidating the current admin credentials. Run the following `kubectl` command to patch the ArgoCD secret:
 ```
-<span id="2d99" class="pr li fq pb b bg ps pt l pu pv" data-selectable-paragraph="">kubectl <span class="hljs-operator">-</span>n argocd <span class="hljs-keyword">get</span> secret argocd<span class="hljs-operator">-</span><span class="hljs-keyword">initial</span><span class="hljs-operator">-</span>admin<span class="hljs-operator">-</span>secret <span class="hljs-operator">-</span>o jsonpath<span class="hljs-operator">=</span>"{.data.password}" <span class="hljs-operator">|</span> base64 <span class="hljs-operator">-</span>d</span>
+kubectl patch secret argocd-secret -n argocd -p '{"data": {"admin.password": null, "admin.passwordMtime": null}}'
 ```
+This step renders the existing admin password useless, ensuring a clean slate for the upcoming password reset.
+
+— -
+
+Step 2: Restarting ArgoCD Server Pods
+
+Next, to apply the changes made in Step 1, we need to restart the ArgoCD server pods. Execute the following command to gracefully restart the pods:
+```
+kubectl delete pods -n argocd -l app.kubernetes.io/name=argocd-server
+```
+This ensures that the changes take effect and the ArgoCD server picks up the updated secret.
+
+— -
+
+Step 3: Decrypting the New Password
+
+Now that the admin credentials are reset, let’s generate a new password and decrypt it for secure access.
+
+Run the following command to retrieve and decrypt the new password from the `argocd-initial-admin-secret`:
+```
+kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
+```
+This command fetches the base64-encoded password, decodes it, and displays the new admin password.
+
 
 Next, we have to create an App in ArgoCD in which we basically define where is our application’s repository located and where to deploy it, and some other small configurations.
 
