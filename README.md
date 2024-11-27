@@ -186,7 +186,7 @@ The GitOps CI/CD pipeline is now set up to automate the build, push, and deploym
 
 The pipeline also provides visibility into the build status, as shown in the accompanying image. This allows you to monitor the success or failure of the CI/CD process.
 
-![](https://miro.medium.com/v2/resize:fit:875/1*mI9EXQuluD551kTVr4Y4PQ.png)
+![](pipelines.png)
 
 # Installing ArgoCD in Kubernetes Cluster
 
