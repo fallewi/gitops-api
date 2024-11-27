@@ -48,7 +48,6 @@ We first have to create a GitHub repository and put the application source code 
 For the [Application source code repository](https://github.com/fallewi/gitops-cicd), we will be using a simple Flask application that displays a web page and this will be packaged in a docker image and published to the DockerHub.
 
 
-
 For the [Kubernetes Manifest repository](https://github.com/fallewi/gitops-manifests.git), we will use a simple deployment and service K8s manifest.
 
 
@@ -61,7 +60,6 @@ To create a workflow, select the GitHub repository, click Actions, and select â€
 
 
 Here is the workflow file
-
 
 
 The above Git workflow file defines a workflow that will run on every push to the main branch. The workflow has three jobs:
@@ -97,7 +95,6 @@ Here is a more detailed description of each job:
 The above GitHub repo uses secrets for Docker Hub and Git. To create secrets in a GitHub repo, go to the repository settings, select secrets, and click New repository secret. Give the secret a name and a value, and then you can use it anywhere in the repo. Secrets are encrypted and stored in GitHub, so they are safe from prying eyes. You can use secrets to store any type of sensitive information, such as API keys, passwords, and tokens.
 
 
-
 The GitOps CI/CD pipeline is now set up to automate the build, push, and deployment processes. Whenever a commit is made to the main branch of [Application repository](https://github.com/fallewi/gitops-cicd/), the pipeline will be triggered automatically. It performs the following actions:
 
 1.  Builds and pushes the Docker image - The pipeline uses the Dockerfile in the repository to build a Docker image. It then pushes the image to a Docker registry, such as Docker Hub. This step ensures that the latest version of the application is available for deployment.
@@ -113,7 +110,8 @@ The pipeline also provides visibility into the build status, as shown in the acc
 To install ArgoCD on an NKE (or any other Kubernetes cluster), you can use the following command:
 
 ```
-<span id="2455" class="pr li fq pb b bg ps pt l pu pv" data-selectable-paragraph="">kubectl create namespace argocd<br>kubectl apply -n argocd -f <span class="hljs-symbol">https:</span>/<span class="hljs-regexp">/raw.githubusercontent.com/argoproj</span><span class="hljs-regexp">/argo-cd/stable</span><span class="hljs-regexp">/manifests/install</span>.yaml</span>
+kubectl create namespace argocd
+kubectl apply -n argocd -f raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
 ```
 
 This command will create a namespace called argocd and deploy **ArgoCD** on your Kubernetes cluster using the installation manifests provided by the ArgoCD project. The manifests are fetched from the GitHub repository and applied to the argocd namespace.
@@ -121,16 +119,16 @@ This command will create a namespace called argocd and deploy **ArgoCD** on your
 After running the installation command, you can verify the deployment by checking the status of the ArgoCD pods:
 
 ```
-<span id="99f9" class="pr li fq pb b bg ps pt l pu pv" data-selectable-paragraph="">kubectl <span class="hljs-keyword">get</span> pods -n argocd</span>
+kubectl get pods -n argocd
 ```
 
 To access the ArgoCD dashboard, I will be using Port Forwarding to access the ArgoCD.
 
 ```
-<span id="7e0d" class="pr li fq pb b bg ps pt l pu pv" data-selectable-paragraph="">kubectl port-forward svc/argocd-server -n argocd 8080:443</span>
+kubectl port-forward svc/argocd-server -n argocd 8080:443
 ```
 
-Access ArgoCD Dashboard from your local machine using the following link
+Access ArgoCD Dashboard from your local machine using the following link if you are on your local machine or use your public ip
 
 [http://127.0.0.1:8080](http://127.0.0.1:8080)
 
