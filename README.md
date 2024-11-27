@@ -274,6 +274,6 @@ By entering the appropriate Worker Node IP address and the designated NodePort i
 
 ![](https://miro.medium.com/v2/resize:fit:875/1*XKG2Rn_dPXNSmMdIojDSZw.png)
 
-We have successfully implemented a highly efficient CI/CD workflow that is now fully automated. As a result, whenever a developer commits changes to the main branch of the [Application repository](https://github.com/tanmaybhandge/CICD_Application_K8s), the updates are seamlessly reflected on the main site without any manual intervention. This automated process eliminates the need for manual deployments, saving us time and effort. Witnessing this level of automation in action is truly remarkable and highlights the effectiveness of our CI/CD implementation.
+We have successfully implemented a highly efficient CI/CD workflow that is now fully automated. As a result, whenever a developer commits changes to the main branch of the Application repository, the updates are seamlessly reflected on the main site without any manual intervention. This automated process eliminates the need for manual deployments, saving us time and effort. Witnessing this level of automation in action is truly remarkable and highlights the effectiveness of our CI/CD implementation.
 
 I sincerely hope that you have found this article to be an enjoyable and informative read.
