@@ -217,7 +217,7 @@ Access ArgoCD Dashboard from your local machine using the following link if you 
 
 ![](https://miro.medium.com/v2/resize:fit:875/1*o99gtzUUzMmBBOaO2uvedA.png)
 
-Step 1: Invalidating Admin Credentials
+Invalidating Admin Credentials
 
 To initiate the password reset, we start by invalidating the current admin credentials. Run the following `kubectl` command to patch the ArgoCD secret:
 ```
@@ -227,7 +227,7 @@ This step renders the existing admin password useless, ensuring a clean slate fo
 
 — -
 
-Step 2: Restarting ArgoCD Server Pods
+Restarting ArgoCD Server Pods
 
 Next, to apply the changes made in Step 1, we need to restart the ArgoCD server pods. Execute the following command to gracefully restart the pods:
 ```
@@ -237,7 +237,7 @@ This ensures that the changes take effect and the ArgoCD server picks up the upd
 
 — -
 
-Step 3: Decrypting the New Password
+Decrypting the New Password
 
 Now that the admin credentials are reset, let’s generate a new password and decrypt it for secure access.
 
