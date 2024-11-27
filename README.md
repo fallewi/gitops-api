@@ -2,7 +2,7 @@
 
 
 
-[![GITOPS CI](https://github.com/fallewi/gitops-api/actions/workflows/gitops.yml/badge.svg)](https://github.com/fallewi/gitops-api/actions/workflows/gitops.yml)
+[![GITOPS CI](https://github.com/fallewi/gitops-cicd/actions/workflows/gitops.yml/badge.svg)](https://github.com/fallewi/gitops-api/actions/workflows/gitops.yml)
 
 # Introduction
 
@@ -37,7 +37,7 @@ Here’s a high-level overview of how to set it up:
 
 In the image above, you can observe the seamless integration. You can see I am using **GitHub Actions** to build a Docker Image of the application and then push the image to a **DockerHub** repository. And then update the version of the new image in the Manifest Git repo. We will be setting up two repositories one for the application code, and another for the Kubernetes manifests.
 
-Every time your code is changed in the [Application repository](https://github.com/tanmaybhandge/CICD_Application_K8s), a new Docker container image will be created, pushed to the DockerHub and it will update the image tag in the Kubernetes [Manifest repository](https://github.com/tanmaybhandge/App-Manifest-).
+Every time your code is changed in the [Application repository]((https://github.com/fallewi/gitops-cicd), a new Docker container image will be created, pushed to the DockerHub and it will update the image tag in the Kubernetes [Manifest repository](https://github.com/fallewi/gitops-manifests.git).
 
 As soon as a change is detected in the Kubernetes Manifest repository, ArgoCD comes into action and starts rolling out and deploying the new application in the Kubernetes cluster. It ensures that the new version of our application is seamlessly deployed, eliminating any manual intervention or potential human errors.
 
@@ -47,23 +47,22 @@ We first have to create a GitHub repository and put the application source code 
 
 For the [Application source code repository](https://github.com/fallewi/gitops-cicd), we will be using a simple Flask application that displays a web page and this will be packaged in a docker image and published to the DockerHub.
 
-<iframe src="https://medium.com/media/749116506540ab34d843fda10568ba01" allowfullscreen="" frameborder="0" height="405" width="680" title="" class="em n fe dz bh" scrolling="no"></iframe>
 
-For the [Kubernetes Manifest repository](https://github.com/tanmaybhandge/App-Manifest-), we will use a simple deployment and service K8s manifest.
 
-<iframe src="https://medium.com/media/2ad6da13f59161de74bd367889902007" allowfullscreen="" frameborder="0" height="894" width="680" title="" class="em n fe dz bh" scrolling="no"></iframe>
+For the [Kubernetes Manifest repository](https://github.com/fallewi/gitops-manifests.git), we will use a simple deployment and service K8s manifest.
+
 
 Above manifest file defines a Kubernetes deployment and service for a Flask application. The deployment will create a single replica of the application, which will be exposed on port 5000. The service will expose the application on port 80 and will be accessible via the NodePort 30001.
 
-Next, we need to set up GitHub Actions in the [Application repository](https://github.com/tanmaybhandge/CICD_Application_K8s) to build the Docker image from the Dockerfile present in the repository and then push the image to the DockerHub repository.
+Next, we need to set up GitHub Actions in the [Application repository](https://github.com/fallewi/gitops-cicd/) to build the Docker image from the Dockerfile present in the repository and then push the image to the DockerHub repository.
 
 To create a workflow, select the GitHub repository, click Actions, and select “Set up a workflow yourself.” This will create a YAML file at path `.github/workflows/main.yml`. This is the only file that we need to create and modify in the GitOps phase.
 
-![](https://miro.medium.com/v2/resize:fit:875/1*02VQA1tljpmtleKGWw3HJQ.png)
+
 
 Here is the workflow file
 
-<iframe src="https://medium.com/media/b91c8d48f9a808d6175d2d1407623b3f" allowfullscreen="" frameborder="0" height="1813" width="680" title="" class="em n fe dz bh" scrolling="no"></iframe>
+
 
 The above Git workflow file defines a workflow that will run on every push to the main branch. The workflow has three jobs:
 
@@ -97,9 +96,9 @@ Here is a more detailed description of each job:
 
 The above GitHub repo uses secrets for Docker Hub and Git. To create secrets in a GitHub repo, go to the repository settings, select secrets, and click New repository secret. Give the secret a name and a value, and then you can use it anywhere in the repo. Secrets are encrypted and stored in GitHub, so they are safe from prying eyes. You can use secrets to store any type of sensitive information, such as API keys, passwords, and tokens.
 
-![](https://miro.medium.com/v2/resize:fit:473/1*EzoLzLsgPwJUmRVURyyNnw.png)
 
-The GitOps CI/CD pipeline is now set up to automate the build, push, and deployment processes. Whenever a commit is made to the main branch of [Application repository](https://github.com/tanmaybhandge/CICD_Application_K8s), the pipeline will be triggered automatically. It performs the following actions:
+
+The GitOps CI/CD pipeline is now set up to automate the build, push, and deployment processes. Whenever a commit is made to the main branch of [Application repository](https://github.com/fallewi/gitops-cicd/), the pipeline will be triggered automatically. It performs the following actions:
 
 1.  Builds and pushes the Docker image - The pipeline uses the Dockerfile in the repository to build a Docker image. It then pushes the image to a Docker registry, such as Docker Hub. This step ensures that the latest version of the application is available for deployment.
 2.  Updates the version in the manifest repository - The pipeline updates the version of the newly built image in a separate Git repository that holds the deployment manifests. This ensures that the deployment manifests reflect the latest image version.
