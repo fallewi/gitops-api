@@ -45,7 +45,7 @@ As soon as a change is detected in the Kubernetes Manifest repository, ArgoCD co
 
 We first have to create a GitHub repository and put the application source code in it.
 
-For the [Application source code repository](https://github.com/tanmaybhandge/CICD_Application_K8s), we will be using a simple Flask application that displays a web page and this will be packaged in a docker image and published to the DockerHub.
+For the [Application source code repository](https://github.com/fallewi/gitops-cicd), we will be using a simple Flask application that displays a web page and this will be packaged in a docker image and published to the DockerHub.
 
 <iframe src="https://medium.com/media/749116506540ab34d843fda10568ba01" allowfullscreen="" frameborder="0" height="405" width="680" title="" class="em n fe dz bh" scrolling="no"></iframe>
 
